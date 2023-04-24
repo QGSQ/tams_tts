@@ -46,7 +46,7 @@ class TTSNode:
         if rospy.get_param('~demo', False):
             self.demo_speakers()
         else:
-            self.sub = rospy.Subscriber('say', StringMsg, self.cb, queue_size= 3)
+            self.sub = rospy.Subscriber('say', StringMsg, self.cb, queue_size= 100)
         rospy.loginfo("TTS initialized")
 
     def cb(self, msg):
