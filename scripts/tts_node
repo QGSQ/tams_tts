@@ -41,7 +41,7 @@ class TTSNode:
 
         self.pub = rospy.Publisher('audio', AudioData, queue_size=1, latch= True)
         self.pubStatus = rospy.Publisher('is_speaking', BoolMsg, queue_size=0, latch=True)
-        self.stopTalkingTimer = None
+        #self.stopTalkingTimer = None
 
         if rospy.get_param('~demo', False):
             self.demo_speakers()
@@ -68,18 +68,12 @@ class TTSNode:
             data_header_length = len('data') + 4
             f.seek(f.getvalue().find(b'data')+data_header_length)
             msg.data = f.read()
-
-        if self.stopTalkingTimer is not None:
-            self.stopTalkingTimer.shutdown()
-        self.pubStatus.publish(True)
-        self.pub.publish(msg)
-        self.stopTalkingTimer = rospy.Timer(duration, self.stoppedTalking, oneshot=True)
         
-        return duration
-
-    def stoppedTalking(self, event):
+        self.pub.publish(msg)
+        self.pubStatus.publish(True)
+        rospy.sleep(duration)
         self.pubStatus.publish(False)
-        self.stopTalkingTimer = None
+        return duration
 
     def demo_speakers(self):
         import random
